@@ -32,20 +32,16 @@ jobs:
           pwd
           ls
 
-      - name: Copy release to SF
-        uses: easingthemes/ssh-deploy@v2.1.4
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          REMOTE_HOST: ${{ secrets.SSH_HOST }}
-          REMOTE_USER: ${{ secrets.SSH_USER }}
-          SOURCE: "Upload-${{ env.U_VERSION }}-b${{ env.U_COM_CNT }}.txt"
-          TARGET: ${{ secrets.REMOTE_PATH}}
+      - name: Install SSH Key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: {%- raw -%} ${{ secrets.SSH_PRIVATE_KEY }} {% endraw %}
+          known_hosts: 'just-a-placeholder-so-we-dont-get-errors'
 
-        #uses: garygrossgarten/github-action-scp@release
-        #with:
-          #local: /home/runner/work/upload_test/upload_test/Upload-${{ env.U_VERSION }}-b${{ env.U_COM_CNT }}.txt
-          #remote: ${{ secrets.REMOTE_PATH }}
-          #host: ${{ secrets.SSH_HOST }}
-          #username: ${{ secrets.SSH_USER }}
-          #privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: Adding Known Hosts
+        run: ssh-keyscan -H {% raw %}${{ secrets.SSH_HOST }}{% endraw%} >> ~/.ssh/known_hosts
+
+      - name: Copy release to SF
+        run: scp ./Upload-${{ env.U_VERSION }}-b${{ env.U_COM_CNT }}.txt {% raw %}${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:{{ secrets.REMOTE_PATH }}{% endraw %}
+
 
