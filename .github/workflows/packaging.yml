@@ -36,12 +36,12 @@ jobs:
         uses: shimataro/ssh-key-action@v2
         with:
           key: {%- raw -%} ${{ secrets.SSH_PRIVATE_KEY }} {% endraw %}
-          known_hosts: 'just-a-placeholder-so-we-dont-get-errors'
+          known_hosts: unnecessary
 
-      - name: Adding Known Hosts
-        run: ssh-keyscan -H {% raw %}${{ secrets.SSH_HOST }}{% endraw%} >> ~/.ssh/known_hosts
+      #- name: Adding Known Hosts
+        #run: ssh-keyscan -H {% raw %}${{ secrets.SSH_HOST }}{% endraw%} >> ~/.ssh/known_hosts
 
       - name: Copy release to SF
-        run: scp ./Upload-${{ env.U_VERSION }}-b${{ env.U_COM_CNT }}.txt {% raw %}${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:{{ secrets.REMOTE_PATH }}{% endraw %}
+        run: rsync -avz ./Upload-${{ env.U_VERSION }}-b${{ env.U_COM_CNT }}.txt {% raw %}${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:{{ secrets.REMOTE_PATH }}{% endraw %}
 
 
