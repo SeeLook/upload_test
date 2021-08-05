@@ -7,7 +7,7 @@ on:
         - main
 
 jobs:
-  upload_to_SF:
+  build_package:
     name:           Testing upload to SourceForge
     runs-on:        macos-latest
 
@@ -28,16 +28,44 @@ jobs:
         run: |
           echo "Here is the content ${{ env.U_COM_CNT }}" > Upload-${{ env.U_VERSION }}-b${{ env.U_COM_CNT }}.txt
 
-      - name: Copy release to SF
-        uses: trendyminds/github-actions-rsync@master
+      - name: Upload to GitHub
+        uses: actions/upload-artifact@v2
         with:
-          RSYNC_OPTIONS: -avzr --delete
-          RSYNC_TARGET: ${{ secrets.REMOTE_PATH }}
-          RSYNC_SOURCE: Upload-${{ env.U_VERSION }}-b${{ env.U_COM_CNT }}.txt
-        env:
-          SSH_PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}
-          SSH_USERNAME: ${{secrets.SSH_USER}}
-          SSH_HOSTNAME: ${{secrets.SSH_HOST}}
+          name: Upload-${{ env.U_VERSION }}-b${{ env.U_COM_CNT }}.txt
+          path: Upload-${{ env.U_VERSION }}-b${{ env.U_COM_CNT }}.txt
 
+
+  upload_package:
+    name:           Uploading to SF
+    runs-on:        ubuntu-latest
+    needs:          build_package
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Set variables
+        run: |
+          VER=$(echo '0.0.1')
+          echo "U_VERSION=$VER" >> $GITHUB_ENV
+          CNT=$(git rev-list HEAD --count)
+          echo "U_COM_CNT=$CNT" >> $GITHUB_ENV
+
+      - name: get artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: Upload-${{ env.U_VERSION }}-b${{ env.U_COM_CNT }}.txt
+
+      - name: Copy release to SF
+        uses: burnett01/rsync-deployments@5.0
+        with:
+          switches: -avzr --delete
+          path: Upload-${{ env.U_VERSION }}-b${{ env.U_COM_CNT }}.txt
+          remote_path: ${{ secrets.REMOTE_PATH }}
+          remote_host: ${{ secrets.SSH_HOST  }}
+          remote_user: ${{ secrets.SSH_USER }}
+          remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
 
 
