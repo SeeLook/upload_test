@@ -9,7 +9,7 @@ on:
 jobs:
   upload_to_SF:
     name:           Testing upload to SourceForge
-    runs-on:        ubuntu-latest
+    runs-on:        macos-latest
 
     steps:
       - name: Checkout code
@@ -29,13 +29,15 @@ jobs:
           echo "Here is the content ${{ env.U_COM_CNT }}" > Upload-${{ env.U_VERSION }}-b${{ env.U_COM_CNT }}.txt
 
       - name: Copy release to SF
-        uses: burnett01/rsync-deployments@5.0
+        uses: trendyminds/github-actions-rsync@master
         with:
-          switches: -avzr --delete
-          path: Upload-${{ env.U_VERSION }}-b${{ env.U_COM_CNT }}.txt
-          remote_path: ${{ secrets.REMOTE_PATH }}
-          remote_host: ${{ secrets.SSH_HOST  }}
-          remote_user: ${{ secrets.SSH_USER }}
-          remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
+          RSYNC_OPTIONS: -avzr --delete
+          RSYNC_TARGET: ${{ secrets.REMOTE_PATH }}
+          RSYNC_SOURCE: Upload-${{ env.U_VERSION }}-b${{ env.U_COM_CNT }}.txt
+        env:
+          SSH_PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}
+          SSH_USERNAME: ${{secrets.SSH_USER}}
+          SSH_HOSTNAME: ${{secrets.SSH_HOST}}
+
 
 
