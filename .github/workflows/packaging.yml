@@ -33,11 +33,19 @@ jobs:
           ls
 
       - name: Copy release to SF
-        uses: garygrossgarten/github-action-scp@release
-        with:
-          local: /home/runner/work/upload_test/upload_test/Upload-${{ env.U_VERSION }}-b${{ env.U_COM_CNT }}.txt
-          remote: ${{ secrets.REMOTE_PATH }}
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
+        uses: easingthemes/ssh-deploy@v2.1.4
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          REMOTE_HOST: ${{ secrets.SSH_HOST }}
+          REMOTE_USER: ${{ secrets.SSH_USER }}
+          SOURCE: "Upload-${{ env.U_VERSION }}-b${{ env.U_COM_CNT }}.txt"
+          TARGET: ${{ secrets.REMOTE_PATH}}
+
+        #uses: garygrossgarten/github-action-scp@release
+        #with:
+          #local: /home/runner/work/upload_test/upload_test/Upload-${{ env.U_VERSION }}-b${{ env.U_COM_CNT }}.txt
+          #remote: ${{ secrets.REMOTE_PATH }}
+          #host: ${{ secrets.SSH_HOST }}
+          #username: ${{ secrets.SSH_USER }}
+          #privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
 
