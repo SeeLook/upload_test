@@ -19,7 +19,8 @@ jobs:
 
       - name: Set variables
         run: |
-          echo "U_VERSION='0.0.1'" >> $GITHUB_ENV
+          VER=$(echo '0.0.1')
+          echo "U_VERSION=$VER" >> $GITHUB_ENV
           CNT=$(git rev-list HEAD --count)
           echo "U_COM_CNT=$CNT" >> $GITHUB_ENV
 
