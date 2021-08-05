@@ -28,12 +28,12 @@ jobs:
         run: |
           echo "version is ${{ env.U_VERSION }}"
           echo "commits number is ${{ env.U_COM_CNT }}"
-          echo "Here is the content ${{ env.U_COM_CNT }}" > Upload-${{ U_VERSION }}-b${{ U_COM_CNT }}.txt
+          echo "Here is the content ${{ env.U_COM_CNT }}" > Upload-${{ env.U_VERSION }}-b${{ env.U_COM_CNT }}.txt
 
       - name: Copy release to SF
         uses: garygrossgarten/github-action-scp@release
         with:
-          local: Upload-${{ U_VERSION }}-b${{ U_COM_CNT }}.txt
+          local: Upload-${{ env.U_VERSION }}-b${{ env.U_COM_CNT }}.txt
           remote: ${{ secrets.REMOTE_PATH }}
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
