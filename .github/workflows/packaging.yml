@@ -26,11 +26,7 @@ jobs:
 
       - name: Prepare build
         run: |
-          echo "version is ${{ env.U_VERSION }}"
-          echo "commits number is ${{ env.U_COM_CNT }}"
           echo "Here is the content ${{ env.U_COM_CNT }}" > Upload-${{ env.U_VERSION }}-b${{ env.U_COM_CNT }}.txt
-          pwd
-          ls
 
       - name: Copy release to SF
         uses: burnett01/rsync-deployments@5.0
