@@ -33,7 +33,7 @@ jobs:
       - name: Copy release to SF
         uses: garygrossgarten/github-action-scp@release
         with:
-          local: ~/Upload-${{ env.U_VERSION }}-b${{ env.U_COM_CNT }}.txt
+          local: /Users/runner/work/upload_test/upload_test/Upload-${{ env.U_VERSION }}-b${{ env.U_COM_CNT }}.txt
           remote: ${{ secrets.REMOTE_PATH }}
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
