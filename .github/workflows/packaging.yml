@@ -35,7 +35,7 @@ jobs:
       - name: Install SSH Key
         uses: shimataro/ssh-key-action@v2
         with:
-          key: {%- raw -%} ${{ secrets.SSH_PRIVATE_KEY }} {% endraw %}
+          key: {% raw %}${{ secrets.SSH_PRIVATE_KEY }}{% endraw %}
           known_hosts: unnecessary
 
       #- name: Adding Known Hosts
